@@ -1,3 +1,18 @@
+:root {
+  --text-color: #fff;
+  --color-x: rgb(118, 221, 67);
+  --color-o: rgb(255, 67, 67);
+
+  --cell-color: #111;
+  --highlight-cell-color: #333;
+
+  --spacing: 0.2rem;
+  --board-color: #424242;
+
+  --super-spacing: 1rem;
+  --super-board-color: #030303;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -5,3 +20,59 @@
   font-family: sans-serif;
 }
 
+body {
+  background-color: var(--super-board-color);
+}
+
+#super-board,
+.super-cell {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--super-spacing);
+}
+
+.super-cell {
+  background-color: var(--board-color);
+  gap: 0.2rem;
+}
+
+.cell {
+  border: none;
+  color: var(--text-color);
+  width: 100%;
+  height: 100%;
+  background-color: var(--cell-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+/* on cell hover but only if there is no disabled class */
+.cell:not(.disabled):hover {
+  cursor: pointer;
+  background-color: var(--highlight-cell-color);
+}
+.cell.disabled:hover {
+  cursor: not-allowed;
+}
+
+.finish-cell {
+  font-size: 5rem;
+}
+
+#super-board {
+  width: min(100vh, 100vw);
+  height: min(100vh, 100vw);
+  background-color: var(--super-board-color);
+  padding: var(--super-spacing);
+}
+
+.X {
+  color: var(--color-x) !important;
+}
+
+.O {
+  color: var(--color-o) !important;
+}
