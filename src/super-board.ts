@@ -20,56 +20,94 @@ export class SuperBoard {
     return this.superCells[x + y * this.boardSize];
   }
 
-  isRowFilled(y: number) {
-    // a cell is filled if it is superCell.isDone();
-    return this.superCells
-      .slice(y * this.boardSize, y * this.boardSize + this.boardSize)
-      .every((superCell) => superCell.isDone());
+  isRowFilled(row: number, player: Cell) {
+    for (let i = 0; i < this.boardSize; i++) {
+      if (this.getSuperCell(i, row).getWinner() !== player) {
+        return false;
+      }
+    }
+    return true;
   }
 
-  isColumnFilled(x: number) {
-    return this.superCells
-      .filter((_, i) => i % this.boardSize === x)
-      .every((superCell) => superCell.isDone());
+  isColumnFilled(column: number, player: Cell) {
+    for (let i = 0; i < this.boardSize; i++) {
+      if (this.getSuperCell(column, i).getWinner() !== player) {
+        return false;
+      }
+    }
+    return true;
   }
 
-  isDiagonalFilled() {
-    return (
-      this.superCells
-        .filter((_, i) => i % (this.boardSize + 1) === 0)
-        .every((superCell) => superCell.isDone()) ||
-      this.superCells
-        .filter((_, i) => i % (this.boardSize - 1) === this.boardSize - 1)
-        .every((superCell) => superCell.isDone())
-    );
+  isDiagonalFilled(player: Cell) {
+    for (let i = 0; i < this.boardSize; i++) {
+      if (this.getSuperCell(i, i).getWinner() !== player) {
+        return false;
+      }
+    }
+    return true;
   }
 
-  isBoardFilled() {
-    return this.superCells.every((superCell) => superCell.isDone());
+  isAntiDiagonalFilled(player: Cell) {
+    for (let i = 0; i < this.boardSize; i++) {
+      if (this.getSuperCell(i, this.boardSize - i - 1).getWinner() !== player) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  isDone() {
+    for (let i = 0; i < this.boardSize; i++) {
+      if (
+        this.isRowFilled(i, Cell.X) ||
+        this.isColumnFilled(i, Cell.X) ||
+        this.isDiagonalFilled(Cell.X) ||
+        this.isAntiDiagonalFilled(Cell.X)
+      ) {
+        return true;
+      }
+      if (
+        this.isRowFilled(i, Cell.O) ||
+        this.isColumnFilled(i, Cell.O) ||
+        this.isDiagonalFilled(Cell.O) ||
+        this.isAntiDiagonalFilled(Cell.O)
+      ) {
+        return true;
+      }
+    }
+    return false;
   }
 
   getWinner() {
     for (let i = 0; i < this.boardSize; i++) {
-      if (this.isRowFilled(i)) {
-        return this.superCells[i * this.boardSize].getWinner();
+      if (
+        this.isRowFilled(i, Cell.X) ||
+        this.isColumnFilled(i, Cell.X) ||
+        this.isDiagonalFilled(Cell.X) ||
+        this.isAntiDiagonalFilled(Cell.X)
+      ) {
+        return Cell.X;
       }
-      if (this.isColumnFilled(i)) {
-        return this.superCells[i].getWinner();
+      if (
+        this.isRowFilled(i, Cell.O) ||
+        this.isColumnFilled(i, Cell.O) ||
+        this.isDiagonalFilled(Cell.O) ||
+        this.isAntiDiagonalFilled(Cell.O)
+      ) {
+        return Cell.O;
       }
     }
-
-    if (this.isDiagonalFilled()) {
-      return this.superCells[this.boardSize].getWinner();
-    }
-
-    return Cell.Empty;
+    return null;
   }
 
-  isDraw() {
-    return this.getWinner() === null && this.isBoardFilled();
-  }
-
-  isDone() {
-    return this.isDraw() || this.getWinner() !== Cell.Empty;
-  }
+  // isDraw() {
+  //   for (let i = 0; i < this.boardSize; i++) {
+  //     for (let j = 0; j < this.boardSize; j++) {
+  //       if (this.getSuperCell(i, j).isd() === Cell.Empty) {
+  //         return false;
+  //       }
+  //     }
+  //   }
+  //   return true;
+  // }
 }

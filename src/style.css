@@ -5,6 +5,7 @@
 
   --cell-color: #111;
   --highlight-cell-color: #333;
+  --active-cell-color: #131;
 
   --spacing: 0.2rem;
   --board-color: #424242;
@@ -34,6 +35,10 @@ body {
 .super-cell {
   background-color: var(--board-color);
   gap: 0.2rem;
+}
+
+.super-cell.active > .cell {
+  background-color: var(--active-cell-color);
 }
 
 .cell {
@@ -67,12 +72,17 @@ body {
   height: min(100vh, 100vw);
   background-color: var(--super-board-color);
   padding: var(--super-spacing);
+  margin: auto;
 }
 
-.X {
+.X::before {
+  content: "❌";
   color: var(--color-x) !important;
+  position: absolute;
 }
 
-.O {
+.O::before {
+  content: "⭕";
   color: var(--color-o) !important;
+  position: absolute;
 }
