@@ -91,7 +91,7 @@ class SuperBoard {
     return Cell.empty;
   }
 
-  toJson() {
+  Map<String, dynamic> toJson() {
     return {
       "superCells": superCells.map((e) => e.toJson()).toList(),
     };

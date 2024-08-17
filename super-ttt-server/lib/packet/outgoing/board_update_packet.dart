@@ -15,7 +15,7 @@ class BoardUpdatePacket implements OutgoingPacket {
   Map<String, dynamic> toJson() {
     return {
       "type": type,
-      "board": board,
+      "board": board.toJson(),
     };
   }
 }
