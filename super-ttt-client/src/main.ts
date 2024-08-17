@@ -3,6 +3,7 @@ import "./css/game.css";
 import "./css/screen.css";
 import "./css/home.css";
 import "./css/waiting.css";
+import "./css/modal.css";
 
 import { Connection } from "./connection";
 import { FindGamePacket } from "./packets/outgoing/find-game-packet";
@@ -22,6 +23,9 @@ import { PlayerTurnPacket } from "./packets/incoming/player-turn-packet";
 import { GameJoinedPacket } from "./packets/incoming/game-joined";
 import { TTTSymbol } from "./ttt-symbol";
 import { EmojisPacket } from "./packets/incoming/emojis-packet";
+import { ErrorPacket } from "./packets/incoming/error-packet";
+import { WinEndPacket } from "./packets/incoming/win-end-packet";
+import { ResetGamePacket } from "./packets/bidirectional/reset-game-packet";
 
 const findGameButton = document.getElementById("find-random-game-button")!;
 const createGameButton = document.getElementById("create-game-button")!;
@@ -34,6 +38,9 @@ const gameCodeInput = document.getElementById(
   "game-code-input"
 )! as HTMLInputElement;
 const superBoardDiv = document.getElementById("super-board") as HTMLDivElement;
+const endModal = document.getElementById("end")!;
+const endText = document.getElementById("end-text")!;
+const restartButton = document.getElementById("restart-button")!;
 
 export class App {
   public connection = new Connection("ws://localhost:8080");
@@ -71,6 +78,10 @@ export class App {
       gameCodeInput.value = "";
     });
 
+    restartButton.addEventListener("click", () => {
+      this.connection.send(new ResetGamePacket());
+    });
+
     this.connection.on<EmojisPacket>("emojis", (packet) => {
       this.selectEmoji(
         localStorage.getItem("selectedEmoji") ||
@@ -78,9 +89,20 @@ export class App {
         false
       );
 
+      // check if query param of emoji is set
+      const urlParams = new URLSearchParams(window.location.search);
+      const emoji = urlParams.get("emoji");
+      if (emoji) {
+        this.selectEmoji(emoji);
+      }
+
       localStorage.setItem("selectedEmoji", this.selectedEmoji);
 
       this.populateEmojis(packet.emojis);
+    });
+
+    this.connection.on<ErrorPacket>("error", (packet) => {
+      alert(packet.errorMessage);
     });
 
     this.connection.on<GameCreatedPacket>("game_created", (packet) => {
@@ -119,6 +141,10 @@ export class App {
       this.showScreen("game");
     });
 
+    this.connection.on<ResetGamePacket>("reset_game", () => {
+      endModal.classList.remove("shown");
+    });
+
     this.connection.on<PlayerTurnPacket>("player_turn", (packet) => {
       this.currentPlayer = packet.cell;
       let currentPlayerEmoji = this.emojiMap[this.currentPlayer];
@@ -127,6 +153,18 @@ export class App {
 
     this.connection.on<BoardUpdatePacket>("board_update", (packet) => {
       this.renderBoard(packet.board);
+    });
+
+    this.connection.on<WinEndPacket>("win_end", (packet) => {
+      let winnerEmoji = this.emojiMap[packet.winner];
+      endText.innerText = `Winner: ${winnerEmoji}`;
+      endModal.classList.add("shown");
+    });
+
+    this.connection.on<WinEndPacket>("draw_end", () => {
+      console.log("Game ended");
+      endText.innerText = "It's a draw!";
+      endModal.classList.add("shown");
     });
 
     this.connection.on<GameStoppedPacket>("game_stopped", () => {
@@ -145,6 +183,8 @@ export class App {
     if (save) localStorage.setItem("selectedEmoji", emoji);
     const selectedEmojiSpan = document.getElementById("selectedEmoji")!;
     selectedEmojiSpan.textContent = this.selectedEmoji;
+
+    document.title = `Super TTT - ${this.selectedEmoji}`;
   }
 
   populateEmojis(emojis: string[] = []) {
@@ -172,6 +212,8 @@ export class App {
   }
 
   showScreen(id: string) {
+    endModal.classList.remove("shown");
+
     const screens = document.querySelectorAll(".screen");
     screens.forEach((screen) => {
       if (screen.id == id) {

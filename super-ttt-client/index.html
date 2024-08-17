@@ -13,7 +13,7 @@
   </head>
   <body>
     <div class="screen" id="home">
-      <div id="home-container">
+      <div class="container">
         <h1>Super Tic Tac Toe</h1>
 
         <span id="selectedEmoji" class="emoji"></span>
@@ -36,7 +36,7 @@
     </div>
 
     <div class="screen" id="waiting">
-      <div id="waiting-container">
+      <div class="container">
         <h1 id="waiting-for-oppopnent-heading">Waiting for Opponent</h1>
         <h2 id="game-code-heading">
           Game Code: <span id="game-code-text"></span>
@@ -46,13 +46,21 @@
     </div>
 
     <div class="screen" id="game">
-      <div id="game-container">
+      <div class="container">
         <h2 id="current-player-heading">
           Current Player: <span id="current-player-text">🤖</span>
         </h2>
         <div id="super-board"></div>
       </div>
     </div>
+
+    <div class="modal" id="end">
+      <h1 id="end-text">Game ended!</h1>
+      <div class="button-group">
+        <button id="restart-button" class="button">Restart</button>
+      </div>
+    </div>
+
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

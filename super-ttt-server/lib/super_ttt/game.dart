@@ -1,8 +1,11 @@
+import 'package:super_ttt_server/packet/bidirectional/reset_game_packet.dart';
 import 'package:super_ttt_server/packet/outgoing/board_update_packet.dart';
+import 'package:super_ttt_server/packet/outgoing/draw_end_packet.dart';
 import 'package:super_ttt_server/packet/outgoing/game_joined_packet.dart';
 import 'package:super_ttt_server/packet/outgoing/game_started_packet.dart';
 import 'package:super_ttt_server/packet/outgoing/game_stopped_packet.dart';
 import 'package:super_ttt_server/packet/outgoing/player_turn_packet.dart';
+import 'package:super_ttt_server/packet/outgoing/win_end_packet.dart';
 import 'package:super_ttt_server/super_ttt/game_manager.dart';
 import 'package:super_ttt_server/super_ttt/logic/board.dart';
 import 'package:super_ttt_server/super_ttt/logic/cell.dart';
@@ -75,17 +78,38 @@ class Game {
         }
       }
 
-      if (!isWildcard) {
-        superBoard.getSuperCell(x2, y2).setActive(true);
+      if (superBoard.isDone()) {
+        // If it is done (and not overwritten by a win), it is a draw
+        OutgoingPacket packet = DrawEndPacket();
+
+        if (superBoard.getWinner() != Cell.empty) {
+          packet = WinEndPacket(winner: superBoard.getWinner());
+        }
+
+        broadcast(packet);
+        superBoard.disable();
+      } else {
+        if (!isWildcard) {
+          superBoard.getSuperCell(x2, y2).setActive(true);
+        }
+
+        togglePlayer();
+
+        broadcast(PlayerTurnPacket(cell: activePlayer));
       }
 
-      togglePlayer();
-
-      broadcast(PlayerTurnPacket(cell: activePlayer));
       broadcast(BoardUpdatePacket(board: superBoard));
     }
 
     return true;
+  }
+
+  void reset() {
+    superBoard = SuperBoard(boardSize: 3);
+    activePlayer = Cell.x;
+    broadcast(ResetGamePacket());
+    broadcast(BoardUpdatePacket(board: superBoard));
+    broadcast(PlayerTurnPacket(cell: activePlayer));
   }
 
   void broadcast(OutgoingPacket packet) {
@@ -97,5 +121,14 @@ class Game {
   @override
   String toString() {
     return "Game{$players, $running, $superBoard, $activePlayer}";
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'players': players.map((player) => player.toJson()).toList(),
+      'running': running,
+      'superBoard': superBoard.toJson(),
+      'activePlayer': activePlayer.stringify(),
+    };
   }
 }
