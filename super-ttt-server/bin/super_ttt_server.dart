@@ -1,3 +1,8 @@
+import 'dart:convert';
+import 'package:shelf/shelf.dart';
+import 'package:shelf/shelf_io.dart' as shelf_io;
+import 'package:shelf_static/shelf_static.dart';
+import 'package:shelf_web_socket/shelf_web_socket.dart';
 import 'package:super_ttt_server/packet/incoming/create_game_packet.dart';
 import 'package:super_ttt_server/packet/incoming/find_game_packet.dart';
 import 'package:super_ttt_server/packet/incoming/join_game_packet.dart';
@@ -11,12 +16,10 @@ import 'package:super_ttt_server/super_ttt/game.dart';
 import 'package:super_ttt_server/super_ttt/game_manager.dart';
 import 'package:super_ttt_server/super_ttt/player.dart';
 import 'package:super_ttt_server/websocket/connection.dart';
-import 'package:shelf/shelf_io.dart' as shelf_io;
-import 'package:shelf_web_socket/shelf_web_socket.dart';
 import 'package:web_socket_channel/io.dart';
 
 void main() {
-  var handler =
+  var wsHandler =
       webSocketHandler((IOWebSocketChannel webSocket, String? protocol) async {
     if (protocol == null || protocol != 'super-ttt') {
       webSocket.sink.close(1002, 'Invalid protocol');
@@ -140,9 +143,35 @@ void main() {
     });
   }, protocols: ['super-ttt']);
 
+  Response analyticsHandler(Request request) {
+    Response response = Response.ok(jsonEncode(GameManager.instance.toJson()));
+    response = response.change(headers: {
+      'Content-Type': 'application/json',
+    });
+
+    return response;
+  }
+
+  var staticHandler =
+      createStaticHandler('static', defaultDocument: 'index.html');
+
+  var cascade = Cascade().add(wsHandler).add(staticHandler).add((request) {
+    if (request.url.path == 'analytics') {
+      return analyticsHandler(request);
+    }
+    return Response.notFound('Not Found');
+  });
+
+  var handler =
+      const Pipeline().addMiddleware(logRequests()).addHandler(cascade.handler);
+
   shelf_io
-      .serve(handler, 'localhost', 8080,
-          poweredByHeader: "Super Tic Tac Toe Server")
+      .serve(
+    handler,
+    '0.0.0.0',
+    8080,
+    poweredByHeader: "Super Tic Tac Toe Server",
+  )
       .then((server) {
     print('Serving at ws://${server.address.host}:${server.port}');
   });
