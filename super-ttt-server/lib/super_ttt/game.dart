@@ -31,7 +31,7 @@ class Game {
     var [xPlayer, oPlayer] = players;
     broadcast(GameStartedPacket(xEmoji: xPlayer.emoji, oEmoji: oPlayer.emoji));
     broadcast(PlayerTurnPacket(cell: activePlayer));
-    broadcast(BoardUpdatedPacket(board: superBoard));
+    broadcast(BoardUpdatePacket(board: superBoard));
   }
 
   void stop() {
@@ -82,7 +82,7 @@ class Game {
       togglePlayer();
 
       broadcast(PlayerTurnPacket(cell: activePlayer));
-      broadcast(BoardUpdatedPacket(board: superBoard));
+      broadcast(BoardUpdatePacket(board: superBoard));
     }
 
     return true;
