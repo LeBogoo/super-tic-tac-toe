@@ -2,9 +2,11 @@ import 'package:super_ttt_server/packet/incoming/create_game_packet.dart';
 import 'package:super_ttt_server/packet/incoming/find_game_packet.dart';
 import 'package:super_ttt_server/packet/incoming/join_game_packet.dart';
 import 'package:super_ttt_server/packet/incoming/stop_search_packet.dart';
+import 'package:super_ttt_server/packet/outgoing/emojis_packet.dart';
 import 'package:super_ttt_server/packet/outgoing/error_packet.dart';
 import 'package:super_ttt_server/packet/outgoing/game_created_packet.dart';
 import 'package:super_ttt_server/packet/outgoing/waiting_for_game_packet.dart';
+import 'package:super_ttt_server/super_ttt/emoji_manager.dart';
 import 'package:super_ttt_server/super_ttt/game.dart';
 import 'package:super_ttt_server/super_ttt/game_manager.dart';
 import 'package:super_ttt_server/super_ttt/player.dart';
@@ -15,7 +17,7 @@ import 'package:web_socket_channel/io.dart';
 
 void main() {
   var handler =
-      webSocketHandler((IOWebSocketChannel webSocket, String? protocol) {
+      webSocketHandler((IOWebSocketChannel webSocket, String? protocol) async {
     if (protocol == null || protocol != 'super-ttt') {
       webSocket.sink.close(1002, 'Invalid protocol');
       return;
@@ -23,6 +25,9 @@ void main() {
 
     print("🔗 New connection");
     Connection connection = Connection(webSocket);
+
+    connection
+        .send(EmojisPacket(emojis: await EmojiManager.instance.getEmojis()));
 
     // Join Private Game
     connection.on<JoinGamePacket>((packet) {
@@ -42,6 +47,12 @@ void main() {
         return;
       }
 
+      bool emojiValid = EmojiManager.instance.validateEmoji(packet.emoji);
+      if (!emojiValid) {
+        connection.send(ErrorPacket(errorMessage: "Invalid emoji"));
+        return;
+      }
+
       connection.player = Player(
         connection: connection,
         emoji: packet.emoji,
@@ -53,6 +64,12 @@ void main() {
     connection.on<CreateGamePacket>((packet) {
       if (connection.player != null) {
         connection.send(ErrorPacket(errorMessage: "Already in a game"));
+        return;
+      }
+
+      bool emojiValid = EmojiManager.instance.validateEmoji(packet.emoji);
+      if (!emojiValid) {
+        connection.send(ErrorPacket(errorMessage: "Invalid emoji"));
         return;
       }
 
@@ -73,6 +90,12 @@ void main() {
 
       if (connection.player != null) {
         connection.send(ErrorPacket(errorMessage: "Already in a game"));
+        return;
+      }
+
+      bool emojiValid = EmojiManager.instance.validateEmoji(packet.emoji);
+      if (!emojiValid) {
+        connection.send(ErrorPacket(errorMessage: "Invalid emoji"));
         return;
       }
 

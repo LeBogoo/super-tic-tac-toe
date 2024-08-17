@@ -4,7 +4,6 @@ import "./css/screen.css";
 import "./css/home.css";
 import "./css/waiting.css";
 
-import { emojis } from "./emojis";
 import { Connection } from "./connection";
 import { FindGamePacket } from "./packets/outgoing/find-game-packet";
 import { WaitingForGamePacket } from "./packets/incoming/waiting-for-game-packet";
@@ -22,6 +21,7 @@ import { BoardUpdatePacket } from "./packets/incoming/board-update-packet";
 import { PlayerTurnPacket } from "./packets/incoming/player-turn-packet";
 import { GameJoinedPacket } from "./packets/incoming/game-joined";
 import { TTTSymbol } from "./ttt-symbol";
+import { EmojisPacket } from "./packets/incoming/emojis-packet";
 
 const findGameButton = document.getElementById("find-random-game-button")!;
 const createGameButton = document.getElementById("create-game-button")!;
@@ -44,15 +44,7 @@ export class App {
 
   constructor() {
     this.connection.connect();
-    this.selectEmoji(
-      localStorage.getItem("selectedEmoji") ||
-        emojis[Math.floor(Math.random() * emojis.length)],
-      false
-    );
 
-    localStorage.setItem("selectedEmoji", this.selectedEmoji);
-
-    this.populateEmojis();
     setTimeout(() => {
       this.showScreen("home");
     }, 1);
@@ -77,6 +69,18 @@ export class App {
       }
 
       gameCodeInput.value = "";
+    });
+
+    this.connection.on<EmojisPacket>("emojis", (packet) => {
+      this.selectEmoji(
+        localStorage.getItem("selectedEmoji") ||
+          packet.emojis[Math.floor(Math.random() * packet.emojis.length)],
+        false
+      );
+
+      localStorage.setItem("selectedEmoji", this.selectedEmoji);
+
+      this.populateEmojis(packet.emojis);
     });
 
     this.connection.on<GameCreatedPacket>("game_created", (packet) => {
@@ -143,7 +147,7 @@ export class App {
     selectedEmojiSpan.textContent = this.selectedEmoji;
   }
 
-  populateEmojis() {
+  populateEmojis(emojis: string[] = []) {
     const emojiContainer = document.getElementById("emojiContainer")!;
 
     emojis.forEach((emoji) => {
