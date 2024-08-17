@@ -53,6 +53,13 @@ void main() {
         return;
       }
 
+      if (game.players[0].emoji == packet.emoji) {
+        connection.send(ErrorPacket(
+            errorMessage:
+                "Someone is already using this emoji in the game you are trying to join"));
+        return;
+      }
+
       connection.player = Player(
         connection: connection,
         emoji: packet.emoji,
@@ -99,8 +106,17 @@ void main() {
         return;
       }
 
-      Game game = GameManager.instance.getOpenPublicGame() ??
-          GameManager.instance.createGame();
+      Game? game = GameManager.instance.getOpenPublicGame();
+      if (game != null) {
+        if (game.players[0].emoji == packet.emoji) {
+          connection.send(ErrorPacket(
+              errorMessage:
+                  "Someone is already using this emoji in the game you are trying to join"));
+          return;
+        }
+      }
+
+      game ??= GameManager.instance.createGame();
 
       connection.player = Player(
         connection: connection,
