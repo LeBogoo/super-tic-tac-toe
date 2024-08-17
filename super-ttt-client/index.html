@@ -4,9 +4,55 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Super TTT</title>
+    <style>
+      body {
+        background-color: rgb(5, 5, 5);
+        color: white;
+      }
+    </style>
   </head>
   <body>
-    <div id="super-board"></div>
+    <div class="screen" id="home">
+      <div id="home-container">
+        <h1>Super Tic Tac Toe</h1>
+
+        <span id="selectedEmoji" class="emoji"></span>
+
+        <div id="emojiContainer"></div>
+
+        <h2>Public Game</h2>
+        <button id="find-random-game-button" class="button">
+          Find Random Game
+        </button>
+        <hr />
+        <h2>Private Game</h2>
+        <button id="create-game-button" class="button">
+          Create Private Game
+        </button>
+        <h3 id="or-text">or</h3>
+        <input type="text" id="game-code-input" placeholder="Enter Game Code" />
+        <button id="join-game-button" class="button">Join Private Game</button>
+      </div>
+    </div>
+
+    <div class="screen" id="waiting">
+      <div id="waiting-container">
+        <h1 id="waiting-for-oppopnent-heading">Waiting for Opponent</h1>
+        <h2 id="game-code-heading">
+          Game Code: <span id="game-code-text"></span>
+        </h2>
+        <button id="cancle-wait-button" class="button">Cancel</button>
+      </div>
+    </div>
+
+    <div class="screen" id="game">
+      <div id="game-container">
+        <h2 id="current-player-heading">
+          Current Player: <span id="current-player-text">🤖</span>
+        </h2>
+        <div id="super-board"></div>
+      </div>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

@@ -1,0 +1,53 @@
+#waiting {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+#waiting-container {
+    text-align: center;
+    background-color: rgb(10, 10, 10);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.5);
+    display: flex;
+    width: 60%;
+    height: min-content;
+    flex-direction: column;
+    align-items: center;
+    padding: 3vh;
+}
+
+#game-code-heading {
+    display: none;
+}
+
+/* animate three dots after #waiting-for-oppopnent-heading appearing in sequence and vanishing again */
+
+#waiting-for-oppopnent-heading {
+    margin-bottom: 2vh;
+}
+
+#waiting-for-oppopnent-heading::after {
+    content: '';
+    animation: dots 2s infinite;
+    position: absolute;
+}
+
+@keyframes dots {
+    0% {
+        content: '';
+    }
+
+    25% {
+        content: '.';
+    }
+
+    50% {
+        content: '..';
+    }
+
+    75% {
+        content: '...';
+    }
+}

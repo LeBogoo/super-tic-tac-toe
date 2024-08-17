@@ -4,7 +4,7 @@ import { Cell } from "./cell";
 export class SuperBoard {
   private superCells: Board[];
 
-  constructor(private boardSize: number) {
+  constructor(public boardSize: number) {
     this.superCells = new Array(boardSize * boardSize);
 
     for (let i = 0; i < this.superCells.length; i++) {
@@ -100,14 +100,24 @@ export class SuperBoard {
     return null;
   }
 
-  // isDraw() {
-  //   for (let i = 0; i < this.boardSize; i++) {
-  //     for (let j = 0; j < this.boardSize; j++) {
-  //       if (this.getSuperCell(i, j).isd() === Cell.Empty) {
-  //         return false;
-  //       }
-  //     }
-  //   }
-  //   return true;
-  // }
+  static fromJson(json: {
+    superCells: {
+      cells: string[];
+      active: boolean;
+    }[];
+  }) {
+    const superBoard = new SuperBoard(Math.sqrt(json.superCells.length));
+
+    json.superCells.forEach((superCell, index) => {
+      const board = Board.fromJson(superCell);
+
+      superBoard.setSuperCell(
+        index % superBoard.boardSize,
+        Math.floor(index / superBoard.boardSize),
+        board
+      );
+    });
+
+    return superBoard;
+  }
 }

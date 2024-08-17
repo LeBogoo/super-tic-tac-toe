@@ -1,0 +1,12 @@
+.screen {
+    position: absolute;
+    top: -200vh;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    transition: top 0.5s;
+}
+
+.screen.active {
+    top: 0;
+}

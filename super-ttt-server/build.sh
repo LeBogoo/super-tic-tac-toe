@@ -1,0 +1,1 @@
+dart compile exe --target-os linux bin/super_ttt_server.dart -o super-ttt-server

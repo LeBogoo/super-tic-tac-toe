@@ -114,4 +114,20 @@ export class Board {
     }
     return true;
   }
+
+  static fromJson(json: { cells: string[]; active: boolean }) {
+    const board = new Board(Math.sqrt(json.cells.length));
+    board.cells = json.cells.map((cell) => {
+      switch (cell) {
+        case "x":
+          return Cell.X;
+        case "o":
+          return Cell.O;
+        default:
+          return Cell.Empty;
+      }
+    });
+    board.active = json.active;
+    return board;
+  }
 }
