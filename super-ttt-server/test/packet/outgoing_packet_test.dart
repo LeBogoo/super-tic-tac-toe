@@ -7,7 +7,7 @@ void main() {
     // TODO - write test for board update packet
 
     test('should create GameStartedPacket and serialize to JSON', () {
-      final packet = GameStartedPacket();
+      final packet = GameStartedPacket(xEmoji: "❌", oEmoji: "⭕");
       final json = packet.toJson();
       expect(json["type"], "game_started");
     });
