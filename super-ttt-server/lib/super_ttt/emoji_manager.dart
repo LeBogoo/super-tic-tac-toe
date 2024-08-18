@@ -28,10 +28,10 @@ class EmojiManager {
   }
 
   Future<void> updateCache() async {
-    String content = await File('emojis.txt').readAsString();
+    String content = await File('res/emojis.txt').readAsString();
     emojiCache = content.split('\n').map((e) => e.trim()).toList();
 
-    String secretContent = await File('secret_emojis.txt').readAsString();
+    String secretContent = await File('res/secret_emojis.txt').readAsString();
     secretEmojis = secretContent.split('\n').map((e) => e.trim()).toList();
   }
 }

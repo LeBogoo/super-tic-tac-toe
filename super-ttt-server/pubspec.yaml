@@ -9,6 +9,7 @@ environment:
 # Add regular dependencies here.
 dependencies:
   shelf: ^1.4.1
+  shelf_static: ^1.1.0
   shelf_web_socket: ^2.0.0
   web_socket_channel: ^2.4.3
   uuid: ^4.4.2

@@ -50,6 +50,10 @@ export class App {
   private ownSymbol: TTTSymbol = "x";
 
   constructor() {
+    if (location.hostname !== "localhost") {
+      this.connection.setServerURL(`wss://${location.hostname}`);
+    }
+
     this.connection.connect();
 
     setTimeout(() => {
