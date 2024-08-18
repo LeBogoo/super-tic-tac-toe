@@ -78,39 +78,41 @@ class Game {
     if (y2 < 0 || y2 >= superBoard.boardSize) return false;
 
     Board superCell = superBoard.getSuperCell(x1, y1);
-    if (superCell.isActive() && superCell.getCell(x2, y2) == Cell.empty) {
-      superCell.setCell(x2, y2, activePlayer);
-
-      bool isWildcard = superBoard.getSuperCell(x2, y2).isDone();
-
-      for (var x3 = 0; x3 < superBoard.boardSize; x3++) {
-        for (var y3 = 0; y3 < superBoard.boardSize; y3++) {
-          superBoard.getSuperCell(x3, y3).setActive(isWildcard);
-        }
-      }
-
-      if (superBoard.isDone()) {
-        // If it is done (and not overwritten by a win), it is a draw
-        OutgoingPacket packet = DrawEndPacket();
-
-        if (superBoard.getWinner() != Cell.empty) {
-          packet = WinEndPacket(winner: superBoard.getWinner());
-        }
-
-        broadcast(packet);
-        superBoard.disable();
-      } else {
-        if (!isWildcard) {
-          superBoard.getSuperCell(x2, y2).setActive(true);
-        }
-
-        togglePlayer();
-
-        broadcast(PlayerTurnPacket(cell: activePlayer));
-      }
-
-      broadcast(BoardUpdatePacket(board: superBoard));
+    if (!superCell.isActive() || superCell.getCell(x2, y2) != Cell.empty) {
+      return false;
     }
+
+    superCell.setCell(x2, y2, activePlayer);
+
+    bool isWildcard = superBoard.getSuperCell(x2, y2).isDone();
+
+    for (var x3 = 0; x3 < superBoard.boardSize; x3++) {
+      for (var y3 = 0; y3 < superBoard.boardSize; y3++) {
+        superBoard.getSuperCell(x3, y3).setActive(isWildcard);
+      }
+    }
+
+    if (superBoard.isDone()) {
+      // If it is done (and not overwritten by a win), it is a draw
+      OutgoingPacket packet = DrawEndPacket();
+
+      if (superBoard.getWinner() != Cell.empty) {
+        packet = WinEndPacket(winner: superBoard.getWinner());
+      }
+
+      broadcast(packet);
+      superBoard.disable();
+    } else {
+      if (!isWildcard) {
+        superBoard.getSuperCell(x2, y2).setActive(true);
+      }
+
+      togglePlayer();
+
+      broadcast(PlayerTurnPacket(cell: activePlayer));
+    }
+
+    broadcast(BoardUpdatePacket(board: superBoard));
 
     return true;
   }
