@@ -70,3 +70,11 @@ input {
     align-items: center;
     padding: 3vh;
 }
+
+
+@media (max-width: 600px) {
+    .container {
+        padding: 1vh;
+        width: min(97vw, 95vh);
+    }
+}
