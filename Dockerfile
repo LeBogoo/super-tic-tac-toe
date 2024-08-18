@@ -4,11 +4,17 @@ FROM node:18 AS client-build
 # Set working directory to client project
 WORKDIR /app/super-ttt-client
 
+# Copy package.json and package-lock.json
+COPY super-ttt-client/package*.json ./
+
+# Install dependencies
+RUN npm install
+
 # Copy the client project files
 COPY super-ttt-client/ .
 
-# Install dependencies and build the Vite project
-RUN npm install && npm run build
+# Build the Vite project
+RUN npm run build
 
 # Stage 2: Build Dart server
 FROM dart:stable AS server-build
@@ -16,11 +22,14 @@ FROM dart:stable AS server-build
 # Set working directory to server project
 WORKDIR /app/super-ttt-server
 
-# Copy the server project files
-COPY super-ttt-server/ .
+# Copy pubspec.yaml and pubspec.lock
+COPY super-ttt-server/pubspec*.yaml ./
 
 # Get dependencies
 RUN dart pub get
+
+# Copy the server project files
+COPY super-ttt-server/ .
 
 # Compile the Dart server
 RUN dart compile exe bin/super_ttt_server.dart -o /app/super_ttt_server
