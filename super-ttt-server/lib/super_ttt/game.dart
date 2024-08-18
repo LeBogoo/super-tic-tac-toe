@@ -71,6 +71,12 @@ class Game {
   }
 
   bool setCell(x1, y1, x2, y2, Cell cell) {
+    // validate if coordinates are in bounds
+    if (x1 < 0 || x1 >= superBoard.boardSize) return false;
+    if (y1 < 0 || y1 >= superBoard.boardSize) return false;
+    if (x2 < 0 || x2 >= superBoard.boardSize) return false;
+    if (y2 < 0 || y2 >= superBoard.boardSize) return false;
+
     Board superCell = superBoard.getSuperCell(x1, y1);
     if (superCell.isActive() && superCell.getCell(x2, y2) == Cell.empty) {
       superCell.setCell(x2, y2, activePlayer);
