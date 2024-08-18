@@ -4,20 +4,6 @@
     align-items: center;
 }
 
-
-#waiting-container {
-    text-align: center;
-    background-color: rgb(10, 10, 10);
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.5);
-    display: flex;
-    width: 60%;
-    height: min-content;
-    flex-direction: column;
-    align-items: center;
-    padding: 3vh;
-}
-
 #game-code-heading {
     display: none;
 }

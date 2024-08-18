@@ -111,7 +111,6 @@ class Board {
   }
 
   Map<String, dynamic> toJson() {
-    print(cells);
     return {
       'cells': cells.map((e) => e.stringify()).toList(),
       'active': active,

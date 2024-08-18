@@ -4,18 +4,7 @@
     align-items: center;
 }
 
-#home-container {
-    text-align: center;
-    background-color: rgb(10, 10, 10);
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.5);
-    display: flex;
-    width: 60%;
-    height: min-content;
-    flex-direction: column;
-    align-items: center;
-    padding: 3vh;
-}
+
 
 
 #emojiContainer {
@@ -82,20 +71,12 @@
 }
 
 @media (max-width: 1000px) {
-    #home-container {
-        width: 80%;
-    }
-
     #emojiContainer {
         width: 80%;
     }
 }
 
 @media (max-width: 768px) {
-    #home-container {
-        width: 90%;
-    }
-
     #emojiContainer {
         width: 90%;
     }

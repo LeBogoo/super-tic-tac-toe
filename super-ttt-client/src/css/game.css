@@ -24,19 +24,6 @@
   margin-bottom: 2vh;
 }
 
-#game-container {
-  text-align: center;
-  background-color: rgb(10, 10, 10);
-  border-radius: 10px;
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
-  display: flex;
-  width: min(90%, 95vw, 95vh);
-  height: min-content;
-  flex-direction: column;
-  align-items: center;
-  padding: 3vh;
-}
-
 #super-board,
 .super-cell {
   display: grid;

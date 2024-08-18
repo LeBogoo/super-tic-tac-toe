@@ -56,4 +56,11 @@ class GameManager {
       publicGames.remove(game);
     }
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'publicGames': publicGames.map((game) => game.toJson()).toList(),
+      'privateGames': privateGames.values.map((game) => game.toJson()).toList(),
+    };
+  }
 }

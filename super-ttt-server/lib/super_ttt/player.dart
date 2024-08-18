@@ -1,4 +1,6 @@
+import 'package:super_ttt_server/packet/bidirectional/reset_game_packet.dart';
 import 'package:super_ttt_server/packet/incoming/set_cell_packet.dart';
+import 'package:super_ttt_server/packet/outgoing/error_packet.dart';
 import 'package:super_ttt_server/super_ttt/event/disconnect_event.dart';
 import 'package:super_ttt_server/super_ttt/game.dart';
 import 'package:super_ttt_server/packet/outgoing_packet.dart';
@@ -25,6 +27,14 @@ class Player {
       if (game.activePlayer == cell) {
         game.setCell(event.x1, event.y1, event.x2, event.y2, cell);
       }
+    });
+
+    connection.on<ResetGamePacket>((event) {
+      if (!game.superBoard.isDone()) {
+        send(ErrorPacket(errorMessage: "Game is not done yet"));
+        return;
+      }
+      game.reset();
     });
   }
 

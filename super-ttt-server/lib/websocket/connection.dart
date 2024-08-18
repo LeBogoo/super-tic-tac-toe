@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:super_ttt_server/packet/bidirectional/ping_packet.dart';
 import 'package:super_ttt_server/super_ttt/event/disconnect_event.dart';
 import 'package:super_ttt_server/super_ttt/player.dart';
 import 'package:super_ttt_server/packet/incoming_packet.dart';
@@ -10,6 +12,8 @@ import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class Connection {
+  int _lastRecievedPing = 0;
+
   final IOWebSocketChannel? webSocket;
   Stream<dynamic> get stream {
     if (webSocket == null) return Stream.empty();
@@ -64,6 +68,27 @@ class Connection {
     sink.done.then((value) {
       print("❌ Connection closed: $closeCode $closeReason");
       triggerDisconnectEvent();
+    });
+
+    Timer.periodic(Duration(seconds: 30), (timer) {
+      send(PingPacket(timestamp: DateTime.now().millisecondsSinceEpoch));
+
+      const int pingTimeout = 5;
+
+      // set another time to wait for the response
+      Future.delayed(Duration(seconds: pingTimeout), () {
+        // check if lastrecieved ping is more than 5 seconds
+        if (DateTime.now().millisecondsSinceEpoch - _lastRecievedPing >
+            (pingTimeout + 1) * 1000) {
+          print("❌ Ping timeout");
+          webSocket!.sink.close(1000, "Ping timeout");
+          timer.cancel();
+        }
+      });
+    });
+
+    on<PingPacket>((packet) {
+      _lastRecievedPing = packet.timestamp;
     });
   }
 

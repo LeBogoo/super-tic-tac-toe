@@ -15,6 +15,12 @@ class SuperBoard {
     superCells[x + y * boardSize] = superCell;
   }
 
+  void disable() {
+    for (int i = 0; i < boardSize * boardSize; i++) {
+      superCells[i].setActive(false);
+    }
+  }
+
   Board getSuperCell(int x, int y) {
     return superCells[x + y * boardSize];
   }
@@ -89,6 +95,10 @@ class SuperBoard {
       }
     }
     return Cell.empty;
+  }
+
+  bool isDraw() {
+    return isDone() && getWinner() == Cell.empty;
   }
 
   Map<String, dynamic> toJson() {

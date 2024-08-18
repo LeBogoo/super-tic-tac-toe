@@ -1,5 +1,6 @@
 import { PacketSystem } from "./packet-system";
 import { BasePacket } from "./packets/base-packet";
+import { PingPacket } from "./packets/bidirectional/ping-packet";
 import { DisconnectedEvent } from "./packets/incoming/disconnected-event";
 
 export class Connection extends PacketSystem {
@@ -8,6 +9,8 @@ export class Connection extends PacketSystem {
 
   constructor(private address: string, public autoreconnect: boolean = true) {
     super();
+
+    this.on<PingPacket>("ping", this.send.bind(this));
   }
 
   public async test(url: string) {

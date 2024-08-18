@@ -1,0 +1,27 @@
+# Server
+super-ttt-server/.dart_tool/
+super-ttt-server/super-ttt-server
+super-ttt-server/static/
+
+
+# Client
+super-ttt-client/logs
+super-ttt-client/*.log
+super-ttt-client/npm-debug.log*
+super-ttt-client/yarn-debug.log*
+super-ttt-client/yarn-error.log*
+super-ttt-client/pnpm-debug.log*
+super-ttt-client/lerna-debug.log*
+super-ttt-client/node_modules
+super-ttt-client/dist
+super-ttt-client/dist-ssr
+super-ttt-client/*.local
+super-ttt-client/.vscode/*
+super-ttt-client/!.vscode/extensions.json
+super-ttt-client/.idea
+super-ttt-client/.DS_Store
+super-ttt-client/*.suo
+super-ttt-client/*.ntvs*
+super-ttt-client/*.njsproj
+super-ttt-client/*.sln
+super-ttt-client/*.sw?
