@@ -41,6 +41,12 @@ class Game {
     GameManager.instance.removeGame(this);
     running = false;
     broadcast(GameStoppedPacket());
+
+    for (Player player in players) {
+      player.connection.player = null;
+    }
+
+    players.clear();
   }
 
   void join(Player player) {
@@ -57,7 +63,6 @@ class Game {
   }
 
   void leave(Player player) {
-    players.remove(player);
     stop();
   }
 

@@ -13,6 +13,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 
 class Connection {
   int _lastRecievedPing = 0;
+  bool connected = true;
 
   final IOWebSocketChannel? webSocket;
   Stream<dynamic> get stream {
@@ -97,6 +98,8 @@ class Connection {
   }
 
   void send(OutgoingPacket packet) {
+    if (!connected) return;
+
     String message = json.encode(packet.toJson());
 
     print("↗️ $message");
@@ -110,6 +113,7 @@ class Connection {
   }
 
   void triggerDisconnectEvent() {
+    connected = false;
     if (callbacks.containsKey(DisconnectEvent)) {
       for (var callback in callbacks[DisconnectEvent]!) {
         callback(DisconnectEvent());
