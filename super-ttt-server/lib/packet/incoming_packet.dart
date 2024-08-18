@@ -1,3 +1,4 @@
+import 'package:super_ttt_server/packet/bidirectional/ping_packet.dart';
 import 'package:super_ttt_server/packet/incoming/create_game_packet.dart';
 import 'package:super_ttt_server/packet/incoming/find_game_packet.dart';
 import 'package:super_ttt_server/packet/incoming/join_game_packet.dart';
@@ -22,6 +23,8 @@ abstract class IncomingPacket implements Packet {
         return SetCellPacket.fromJson(json);
       case "stop_search":
         return StopSearchPacket.fromJson(json);
+      case "ping":
+        return PingPacket.fromJson(json);
 
       default:
         throw Exception("Invalid packet type: ${json["type"]}");
