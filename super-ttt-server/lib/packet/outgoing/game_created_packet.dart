@@ -17,4 +17,9 @@ class GameCreatedPacket implements OutgoingPacket {
       "gameCode": gameCode,
     };
   }
+
+  @override
+  String stringify() {
+    return "GameCreatedPacket{gameCode: $gameCode}";
+  }
 }

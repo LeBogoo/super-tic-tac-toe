@@ -12,4 +12,9 @@ class GameStoppedPacket implements OutgoingPacket {
       "type": type,
     };
   }
+
+  @override
+  String stringify() {
+    return "GameStoppedPacket{}";
+  }
 }

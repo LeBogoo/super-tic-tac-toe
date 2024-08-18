@@ -17,4 +17,9 @@ class ResetGamePacket implements IncomingPacket, OutgoingPacket {
       "type": type,
     };
   }
+
+  @override
+  String stringify() {
+    return "ResetGamePacket{}";
+  }
 }

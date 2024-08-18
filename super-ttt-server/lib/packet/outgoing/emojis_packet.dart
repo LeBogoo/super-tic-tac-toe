@@ -17,4 +17,11 @@ class EmojisPacket implements OutgoingPacket {
       "emojis": emojis,
     };
   }
+
+  @override
+  String stringify() {
+    var trunkatedEmojis = emojis.take(10);
+    var isTrunkated = trunkatedEmojis.length < emojis.length;
+    return "EmojisPacket{emojis: ${trunkatedEmojis.join(", ")}${isTrunkated ? ',...' : ''}}";
+  }
 }

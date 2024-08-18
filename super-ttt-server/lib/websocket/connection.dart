@@ -42,12 +42,12 @@ class Connection {
   Connection(this.webSocket) {
     if (webSocket == null) return;
     stream.listen((message) {
-      print("↙️ $message");
-
       final Map<String, dynamic> jsonMessage = json.decode(message as String);
 
       try {
         Packet packet = IncomingPacket.fromJson(jsonMessage);
+        print("↙️ ${packet.stringify()}");
+
         // get type of packet
         Type type = packet.runtimeType;
         if (callbacks.containsKey(type)) {
@@ -100,11 +100,9 @@ class Connection {
   void send(OutgoingPacket packet) {
     if (!connected) return;
 
-    String message = json.encode(packet.toJson());
+    print("↗️ ${packet.stringify()}");
 
-    print("↗️ $message");
-
-    sink.add(message);
+    sink.add(jsonEncode(packet.toJson()));
   }
 
   void close() {

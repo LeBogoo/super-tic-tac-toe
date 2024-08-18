@@ -14,4 +14,9 @@ class GameJoinedPacket implements OutgoingPacket {
       "playerSymbol": playerSymbol,
     };
   }
+
+  @override
+  String stringify() {
+    return "GameJoinedPacket{playerSymbol: $playerSymbol}";
+  }
 }

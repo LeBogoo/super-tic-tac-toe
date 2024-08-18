@@ -18,4 +18,9 @@ class PlayerTurnPacket implements OutgoingPacket {
       "cell": cell.stringify(),
     };
   }
+
+  @override
+  String stringify() {
+    return "PlayerTurnPacket{cell: ${cell.stringify()}}";
+  }
 }

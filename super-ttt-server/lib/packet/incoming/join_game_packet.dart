@@ -18,4 +18,9 @@ class JoinGamePacket implements IncomingPacket {
       emoji: json["emoji"],
     );
   }
+
+  @override
+  String stringify() {
+    return "JoinGamePacket{gameCode: $gameCode, emoji: $emoji}";
+  }
 }

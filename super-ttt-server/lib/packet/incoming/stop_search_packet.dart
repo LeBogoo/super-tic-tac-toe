@@ -9,4 +9,9 @@ class StopSearchPacket implements IncomingPacket {
   factory StopSearchPacket.fromJson(Map<String, dynamic> json) {
     return StopSearchPacket();
   }
+
+  @override
+  String stringify() {
+    return "StopSearchPacket{}";
+  }
 }

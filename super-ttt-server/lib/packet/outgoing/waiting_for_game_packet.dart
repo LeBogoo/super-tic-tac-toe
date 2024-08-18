@@ -12,4 +12,9 @@ class WaitingForGamePacket implements OutgoingPacket {
       "type": type,
     };
   }
+
+  @override
+  String stringify() {
+    return "WaitingForGamePacket{}";
+  }
 }

@@ -24,4 +24,9 @@ class PingPacket implements IncomingPacket, OutgoingPacket {
       "timestamp": timestamp,
     };
   }
+
+  @override
+  String stringify() {
+    return "PingPacket{timestamp: $timestamp}";
+  }
 }

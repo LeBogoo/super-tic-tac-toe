@@ -15,4 +15,9 @@ class WinEndPacket implements OutgoingPacket {
       "winner": winner.stringify(),
     };
   }
+
+  @override
+  String stringify() {
+    return "WinEndPacket{winner: ${winner.stringify()}}";
+  }
 }

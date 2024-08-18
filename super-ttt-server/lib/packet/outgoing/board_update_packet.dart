@@ -18,4 +18,9 @@ class BoardUpdatePacket implements OutgoingPacket {
       "board": board.toJson(),
     };
   }
+
+  @override
+  String stringify() {
+    return "BoardUpdatePacket{board: TRUNKATED}";
+  }
 }

@@ -12,4 +12,9 @@ class DrawEndPacket implements OutgoingPacket {
       "type": type,
     };
   }
+
+  @override
+  String stringify() {
+    return "DrawEndPacket{}";
+  }
 }

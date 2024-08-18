@@ -19,4 +19,9 @@ class GameStartedPacket implements OutgoingPacket {
       "oEmoji": oEmoji,
     };
   }
+
+  @override
+  String stringify() {
+    return "GameStartedPacket{xEmoji: $xEmoji, oEmoji: $oEmoji}";
+  }
 }

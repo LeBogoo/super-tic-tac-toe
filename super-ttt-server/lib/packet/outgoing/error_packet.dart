@@ -20,4 +20,9 @@ class ErrorPacket implements OutgoingPacket {
       "data": data,
     };
   }
+
+  @override
+  String stringify() {
+    return "ErrorPacket{errorMessage: $errorMessage, data: $data}";
+  }
 }

@@ -15,4 +15,9 @@ class FindGamePacket implements IncomingPacket {
       emoji: json["emoji"],
     );
   }
+
+  @override
+  String stringify() {
+    return "FindGamePacket{emoji: $emoji}";
+  }
 }
