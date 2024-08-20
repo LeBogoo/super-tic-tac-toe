@@ -164,7 +164,7 @@ void main() {
       return analyticsHandler(request);
     }
 
-    if (request.url.pathSegments[0] == ("create")) {
+    if (request.url.pathSegments[0] == "create") {
       // get second part of the path
       String gameCode = request.url.pathSegments[1];
       Game game = GameManager.instance.createCustomGame(code: gameCode);
