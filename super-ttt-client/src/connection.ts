@@ -1,11 +1,14 @@
 import { PacketSystem } from "./packet-system";
 import { BasePacket } from "./packets/base-packet";
 import { PingPacket } from "./packets/bidirectional/ping-packet";
-import { DisconnectedEvent } from "./packets/incoming/disconnected-event";
+import { ConnectionInformationEvent } from "./packets/events/connection-information-event";
+import { DisconnectedEvent } from "./packets/events/disconnected-event";
 
 export class Connection extends PacketSystem {
   ws!: WebSocket;
   id: string | undefined;
+
+  private isReconnecting = false;
 
   constructor(private address: string, public autoreconnect: boolean = true) {
     super();
@@ -84,15 +87,27 @@ export class Connection extends PacketSystem {
   private connectionOpened() {
     if (this.id) return;
     console.log("✅", "Connected to server!");
+    if (this.isReconnecting) {
+      this.emit(
+        new ConnectionInformationEvent("✅ Suceessfully reconnected to server!")
+      );
+      this.isReconnecting = false;
+    }
   }
 
   private connectionClosed() {
     this.emit(new DisconnectedEvent());
     if (this.autoreconnect) {
+      this.isReconnecting = true;
+      this.emit(
+        new ConnectionInformationEvent(
+          "❌ Lost connection to server. Reconnecting..."
+        )
+      );
       setTimeout(() => {
         console.log("❌", "Connection failed. Trying to reconnect...");
         this.connect();
-      }, 1000);
+      }, 5000);
     }
   }
 }

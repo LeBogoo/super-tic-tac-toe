@@ -13,7 +13,7 @@ import { StopSearchPacket } from "./packets/outgoing/stop-search-packet";
 import { GameStoppedPacket } from "./packets/incoming/game-stopped-packet";
 import { CreateGamePacket } from "./packets/outgoing/create-game-packet";
 import { GameCreatedPacket } from "./packets/incoming/game-created-packet";
-import { DisconnectedEvent } from "./packets/incoming/disconnected-event";
+import { DisconnectedEvent } from "./packets/events/disconnected-event";
 import { JoinGamePacket } from "./packets/outgoing/join-game-packet";
 import { SuperBoard } from "./super-board";
 import { Cell } from "./cell";
@@ -27,6 +27,7 @@ import { EmojisPacket } from "./packets/incoming/emojis-packet";
 import { ErrorPacket } from "./packets/incoming/error-packet";
 import { WinEndPacket } from "./packets/incoming/win-end-packet";
 import { ResetGamePacket } from "./packets/bidirectional/reset-game-packet";
+import { ConnectionInformationEvent } from "./packets/events/connection-information-event";
 
 const findGameButton = document.getElementById("find-random-game-button")!;
 const createGameButton = document.getElementById("create-game-button")!;
@@ -162,6 +163,13 @@ export class App {
       this.showError(packet.errorMessage);
     });
 
+    this.connection.on<ConnectionInformationEvent>(
+      "connection_information",
+      (packet) => {
+        this.showAlert(packet.message);
+      }
+    );
+
     this.connection.on<GameCreatedPacket>("game_created", (packet) => {
       console.log("Game created. Waiting for other player to join");
       gameCodeHeading.style.display = "block";
@@ -248,7 +256,7 @@ export class App {
     alertBox.appendChild(alert);
     setTimeout(() => {
       alert.classList.add("shown");
-    }, 0);
+    }, 100);
 
     setTimeout(() => {
       alert.classList.remove("shown");
