@@ -40,6 +40,9 @@ const gameCodeInput = document.getElementById(
 const superBoardDiv = document.getElementById("super-board") as HTMLDivElement;
 const endModal = document.getElementById("end")!;
 const endText = document.getElementById("end-text")!;
+const errorModal = document.getElementById("error")!;
+const errorText = document.getElementById("error-text")!;
+const dismissErrorButton = document.getElementById("dismiss-error-button")!;
 const restartButton = document.getElementById("restart-button")!;
 const joinGameWithEmojiButton = document.getElementById(
   "join-game-with-emoji-button"
@@ -51,6 +54,7 @@ export class App {
   private emojiMap = { x: "", o: "" };
   private currentPlayer: TTTSymbol = "x";
   private ownSymbol: TTTSymbol = "x";
+  private errorCallback?: () => void;
 
   constructor() {
     if (location.hostname !== "localhost") {
@@ -103,6 +107,11 @@ export class App {
       gameCodeInput.value = "";
     });
 
+    dismissErrorButton.addEventListener("click", () => {
+      errorModal.classList.remove("shown");
+      if (this.errorCallback) this.errorCallback();
+      this.errorCallback = undefined;
+    });
 
     restartButton.addEventListener("click", () => {
       this.connection.send(new ResetGamePacket());
@@ -139,7 +148,7 @@ export class App {
     });
 
     this.connection.on<ErrorPacket>("error", (packet) => {
-      alert(packet.errorMessage);
+      this.showError(packet.errorMessage);
     });
 
     this.connection.on<GameCreatedPacket>("game_created", (packet) => {
@@ -213,6 +222,12 @@ export class App {
       console.log("Disconnected from server");
       this.showScreen("home");
     });
+  }
+
+  showError(message: string, callback?: () => void) {
+    errorText.innerText = message;
+    errorModal.classList.add("shown");
+    this.errorCallback = callback;
   }
 
   selectEmoji(emoji: string, save = true) {
