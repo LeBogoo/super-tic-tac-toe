@@ -1,13 +1,4 @@
-#home {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-
-
-
-#emojiContainer {
+.emoji-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -33,12 +24,12 @@
 
 }
 
-#selectedEmoji,
+.selected-emoji,
 .selected {
     filter: drop-shadow(0 0 0.75rem white);
 }
 
-#selectedEmoji {
+.selected-emoji {
     font-size: 4rem;
     margin-bottom: 1rem;
 }
@@ -71,19 +62,19 @@
 }
 
 @media (max-width: 1000px) {
-    #emojiContainer {
+    .emoji-container {
         width: 80%;
     }
 }
 
 @media (max-width: 768px) {
-    #emojiContainer {
+    .emoji-container {
         width: 90%;
     }
 }
 
 @media (max-width: 500px) {
-    #emojiContainer {
+    .emoji-container {
         width: 100%;
     }
 }

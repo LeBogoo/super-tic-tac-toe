@@ -1,9 +1,3 @@
-#game {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 :root {
   --cell-color: #111;
 

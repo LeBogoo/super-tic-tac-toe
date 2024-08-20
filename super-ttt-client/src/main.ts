@@ -41,6 +41,9 @@ const superBoardDiv = document.getElementById("super-board") as HTMLDivElement;
 const endModal = document.getElementById("end")!;
 const endText = document.getElementById("end-text")!;
 const restartButton = document.getElementById("restart-button")!;
+const joinGameWithEmojiButton = document.getElementById(
+  "join-game-with-emoji-button"
+)!;
 
 export class App {
   public connection = new Connection("ws://localhost:8080");
@@ -57,6 +60,11 @@ export class App {
     this.connection.connect();
 
     setTimeout(() => {
+      if (location.hash) {
+        this.showScreen("emoji-selection");
+        return;
+      }
+
       this.showScreen("home");
     }, 1);
 
@@ -82,6 +90,20 @@ export class App {
       gameCodeInput.value = "";
     });
 
+    joinGameWithEmojiButton.addEventListener("click", () => {
+      const gameCode = location.hash.slice(1);
+      if (gameCode) {
+        this.connection.send(new JoinGamePacket(gameCode, this.selectedEmoji));
+      } else {
+        this.showError("No game code found in URL", () => {
+          this.showScreen("home");
+        });
+      }
+
+      gameCodeInput.value = "";
+    });
+
+
     restartButton.addEventListener("click", () => {
       this.connection.send(new ResetGamePacket());
     });
@@ -103,6 +125,17 @@ export class App {
       localStorage.setItem("selectedEmoji", this.selectedEmoji);
 
       this.populateEmojis(packet.emojis);
+
+      const selectedEmojis = document.querySelectorAll(".selected");
+      console.log(selectedEmojis);
+
+      if (selectedEmojis.length > 0) {
+        for (let selectedEmoji of selectedEmojis) {
+          selectedEmoji.scrollIntoView({
+            block: "center",
+          });
+        }
+      }
     });
 
     this.connection.on<ErrorPacket>("error", (packet) => {
@@ -185,34 +218,38 @@ export class App {
   selectEmoji(emoji: string, save = true) {
     this.selectedEmoji = emoji;
     if (save) localStorage.setItem("selectedEmoji", emoji);
-    const selectedEmojiSpan = document.getElementById("selectedEmoji")!;
-    selectedEmojiSpan.textContent = this.selectedEmoji;
+    const selectedEmojiSpans = document.querySelectorAll(".selected-emoji")!;
+    for (let selectedEmojiSpan of selectedEmojiSpans) {
+      selectedEmojiSpan.textContent = this.selectedEmoji;
+    }
 
     document.title = `Super TTT - ${this.selectedEmoji}`;
   }
 
   populateEmojis(emojis: string[] = []) {
-    const emojiContainer = document.getElementById("emojiContainer")!;
+    const emojiContainers = document.querySelectorAll(".emoji-container")!;
 
-    emojis.forEach((emoji) => {
-      const span = document.createElement("span");
-      span.classList.add("emoji");
-      span.textContent = emoji;
-      span.dataset.emoji = emoji;
-      emojiContainer.appendChild(span);
+    for (let emoji of emojis) {
+      for (const emojiContainer of emojiContainers) {
+        const span = document.createElement("span");
+        span.classList.add("emoji");
+        span.textContent = emoji;
+        span.dataset.emoji = emoji;
+        emojiContainer.appendChild(span);
 
-      if (emoji == this.selectedEmoji) {
-        span.classList.add("selected");
+        if (emoji == this.selectedEmoji) {
+          span.classList.add("selected");
+        }
+
+        span.addEventListener("click", () => {
+          document
+            .querySelectorAll(".emoji")
+            .forEach((e) => e.classList.remove("selected"));
+          span.classList.add("selected");
+          this.selectEmoji(emoji);
+        });
       }
-
-      span.addEventListener("click", () => {
-        document
-          .querySelectorAll(".emoji")
-          .forEach((e) => e.classList.remove("selected"));
-        span.classList.add("selected");
-        this.selectEmoji(emoji);
-      });
-    });
+    }
   }
 
   showScreen(id: string) {
