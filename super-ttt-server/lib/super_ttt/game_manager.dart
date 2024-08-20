@@ -49,6 +49,15 @@ class GameManager {
     return game;
   }
 
+  Game createCustomGame({
+    required String code,
+  }) {
+    code = code.toUpperCase();
+    Game game = Game(code: code);
+    privateGames[code] = game;
+    return game;
+  }
+
   void removeGame(Game game) {
     if (game.code != null) {
       privateGames.remove(game.code);

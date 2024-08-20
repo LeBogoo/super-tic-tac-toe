@@ -56,11 +56,15 @@ void main() {
         return;
       }
 
-      if (game.players[0].emoji == packet.emoji) {
-        connection.send(ErrorPacket(
-            errorMessage:
-                "Someone is already using this emoji in the game you are trying to join"));
-        return;
+      if (game.players.isNotEmpty) {
+        if (game.players[0].emoji == packet.emoji) {
+          connection.send(ErrorPacket(
+              errorMessage:
+                  "Someone is already using this emoji in the game you are trying to join"));
+          return;
+        }
+      } else {
+        connection.send(GameCreatedPacket(gameCode: game.code));
       }
 
       connection.player = Player(
@@ -158,6 +162,14 @@ void main() {
   var cascade = Cascade().add(wsHandler).add(staticHandler).add((request) {
     if (request.url.path == 'analytics') {
       return analyticsHandler(request);
+    }
+
+    if (request.url.pathSegments[0] == ("create")) {
+      // get second part of the path
+      String gameCode = request.url.pathSegments[1];
+      Game game = GameManager.instance.createCustomGame(code: gameCode);
+
+      return Response.ok("Created Game \"${game.code}\". Join it to play!");
     }
     return Response.notFound('Not Found');
   });
