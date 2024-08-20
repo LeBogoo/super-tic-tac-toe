@@ -4,6 +4,7 @@ import "./css/screen.css";
 import "./css/home.css";
 import "./css/waiting.css";
 import "./css/modal.css";
+import "./css/alert.css";
 
 import { Connection } from "./connection";
 import { FindGamePacket } from "./packets/outgoing/find-game-packet";
@@ -30,7 +31,8 @@ import { ResetGamePacket } from "./packets/bidirectional/reset-game-packet";
 const findGameButton = document.getElementById("find-random-game-button")!;
 const createGameButton = document.getElementById("create-game-button")!;
 const joinGameButton = document.getElementById("join-game-button")!;
-const cancleWaitButton = document.getElementById("cancle-wait-button")!;
+const cancelWaitButton = document.getElementById("cancel-wait-button")!;
+const copyGameUrlButton = document.getElementById("copy-game-url-button")!;
 const gameCodeHeading = document.getElementById("game-code-heading")!;
 const gameCodeText = document.getElementById("game-code-text")!;
 const currentPlayerText = document.getElementById("current-player-text")!;
@@ -38,6 +40,7 @@ const gameCodeInput = document.getElementById(
   "game-code-input"
 )! as HTMLInputElement;
 const superBoardDiv = document.getElementById("super-board") as HTMLDivElement;
+const alertBox = document.getElementById("alert-box") as HTMLDivElement;
 const endModal = document.getElementById("end")!;
 const endText = document.getElementById("end-text")!;
 const errorModal = document.getElementById("error")!;
@@ -77,8 +80,14 @@ export class App {
       gameCodeHeading.style.display = "none";
     });
 
-    cancleWaitButton.addEventListener("click", () => {
+    cancelWaitButton.addEventListener("click", () => {
       this.connection.send(new StopSearchPacket());
+    });
+
+    copyGameUrlButton.addEventListener("click", () => {
+      const gameUrl = `${location.origin}/#${gameCodeText.innerText}`;
+      navigator.clipboard.writeText(gameUrl);
+      this.showAlert("Game URL copied to clipboard");
     });
 
     createGameButton.addEventListener("click", () => {
@@ -89,6 +98,8 @@ export class App {
       const gameCode = gameCodeInput.value;
       if (gameCode) {
         this.connection.send(new JoinGamePacket(gameCode, this.selectedEmoji));
+      } else {
+        this.showAlert("Please enter a game code");
       }
 
       gameCodeInput.value = "";
@@ -228,6 +239,23 @@ export class App {
     errorText.innerText = message;
     errorModal.classList.add("shown");
     this.errorCallback = callback;
+  }
+
+  showAlert(message: string, duration = 3000) {
+    const alert = document.createElement("span");
+    alert.classList.add("alert");
+    alert.innerText = message;
+    alertBox.appendChild(alert);
+    setTimeout(() => {
+      alert.classList.add("shown");
+    }, 0);
+
+    setTimeout(() => {
+      alert.classList.remove("shown");
+      setTimeout(() => {
+        alertBox.removeChild(alert);
+      }, 1000);
+    }, duration);
   }
 
   selectEmoji(emoji: string, save = true) {

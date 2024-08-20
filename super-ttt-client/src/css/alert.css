@@ -1,0 +1,21 @@
+.alert {
+    position: fixed;
+    top: -4rem;
+    left: 50%;
+    transform: translateX(-50%);
+
+    z-index: 1000;
+
+    margin-top: 1rem;
+    padding: 0.7rem;
+    background-color: rgb(92, 26, 26);
+    border-radius: 10px;
+    transition: top 0.5s;
+
+    user-select: none;
+}
+
+.alert.shown {
+    top: 0;
+    user-select: initial;
+}
