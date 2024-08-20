@@ -15,4 +15,15 @@ extension CellExtension on Cell {
         return '';
     }
   }
+
+  static Cell fromString(String string) {
+    switch (string) {
+      case 'x':
+        return Cell.x;
+      case 'o':
+        return Cell.o;
+      default:
+        return Cell.empty;
+    }
+  }
 }

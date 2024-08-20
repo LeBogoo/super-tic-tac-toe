@@ -50,11 +50,13 @@
     <div class="screen" id="waiting">
       <div class="container">
         <h1 id="waiting-for-oppopnent-heading">Waiting for Opponent</h1>
-        <h2 id="game-code-heading">
+        <h2 id="game-code-heading" class="hidden">
           Game Code: <span id="game-code-text"></span>
         </h2>
 
-        <button id="copy-game-url-button" class="button">Copy Game URL</button>
+        <button id="copy-game-url-button" class="button hidden">
+          Copy Game URL
+        </button>
         <button id="cancel-wait-button" class="button">Cancel</button>
       </div>
     </div>
@@ -70,7 +72,8 @@
 
     <div class="modal" id="end">
       <h1 id="end-text">Game ended!</h1>
-      <div class="button-group">
+      <div class="center-elements">
+        <button id="gg-button" class="button">GG!</button>
         <button id="restart-button" class="button">Restart</button>
       </div>
     </div>

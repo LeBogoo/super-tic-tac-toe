@@ -1,3 +1,4 @@
+import 'package:super_ttt_server/packet/bidirectional/gg_packet.dart';
 import 'package:super_ttt_server/packet/bidirectional/ping_packet.dart';
 import 'package:super_ttt_server/packet/incoming/create_game_packet.dart';
 import 'package:super_ttt_server/packet/incoming/find_game_packet.dart';
@@ -23,6 +24,8 @@ abstract class IncomingPacket implements Packet {
         return SetCellPacket.fromJson(json);
       case "stop_search":
         return StopSearchPacket.fromJson(json);
+      case "gg":
+        return GGPacket.fromJson(json);
       case "ping":
         return PingPacket.fromJson(json);
 

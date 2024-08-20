@@ -28,6 +28,7 @@ import { ErrorPacket } from "./packets/incoming/error-packet";
 import { WinEndPacket } from "./packets/incoming/win-end-packet";
 import { ResetGamePacket } from "./packets/bidirectional/reset-game-packet";
 import { ConnectionInformationEvent } from "./packets/events/connection-information-event";
+import { GGPacket } from "./packets/bidirectional/gg-packet";
 
 const findGameButton = document.getElementById("find-random-game-button")!;
 const createGameButton = document.getElementById("create-game-button")!;
@@ -48,6 +49,7 @@ const errorModal = document.getElementById("error")!;
 const errorText = document.getElementById("error-text")!;
 const dismissErrorButton = document.getElementById("dismiss-error-button")!;
 const restartButton = document.getElementById("restart-button")!;
+const ggButton = document.getElementById("gg-button")!;
 const joinGameWithEmojiButton = document.getElementById(
   "join-game-with-emoji-button"
 )!;
@@ -78,7 +80,8 @@ export class App {
 
     findGameButton.addEventListener("click", () => {
       this.connection.send(new FindGamePacket(this.selectedEmoji));
-      gameCodeHeading.style.display = "none";
+      gameCodeHeading.classList.add("hidden");
+      copyGameUrlButton.classList.add("hidden");
     });
 
     cancelWaitButton.addEventListener("click", () => {
@@ -92,6 +95,10 @@ export class App {
     });
 
     createGameButton.addEventListener("click", () => {
+      gameCodeHeading.classList.remove("hidden");
+      copyGameUrlButton.classList.remove("hidden");
+      console.log(gameCodeHeading, copyGameUrlButton);
+
       this.connection.send(new CreateGamePacket(this.selectedEmoji));
     });
 
@@ -127,6 +134,16 @@ export class App {
 
     restartButton.addEventListener("click", () => {
       this.connection.send(new ResetGamePacket());
+    });
+
+    ggButton.addEventListener("click", () => {
+      this.connection.send(new GGPacket(this.ownSymbol));
+    });
+
+    this.connection.on<GGPacket>("gg", (packet) => {
+      let ggEmoji = this.emojiMap[packet.player];
+      let ggText = `${ggEmoji}: GG!`;
+      this.showAlert(ggText, 1000);
     });
 
     this.connection.on<EmojisPacket>("emojis", (packet) => {
@@ -172,7 +189,6 @@ export class App {
 
     this.connection.on<GameCreatedPacket>("game_created", (packet) => {
       console.log("Game created. Waiting for other player to join");
-      gameCodeHeading.style.display = "block";
       gameCodeText.innerText = packet.gameCode;
       this.showScreen("waiting");
     });

@@ -21,6 +21,16 @@ hr {
     display: flex;
 }
 
+.hidden {
+    display: none !important;
+}
+
+.center-elements {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .button,
 input {
     width: 35%;
@@ -34,16 +44,23 @@ input {
     font-size: 1.5em;
     margin: 0.25em;
     cursor: pointer;
-    box-shadow: 0 3px 0 rgb(59, 17, 17);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    transform: translateY(-5px);
+    /* shadow below button */
+    box-shadow: 0 7px 0 rgb(59, 17, 17);
+
+    transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.1s ease;
 }
 
 input:focus,
 .button:hover {
-    transform: translateY(-5px);
-    /* shadow below button */
-    box-shadow: 0 7px 0 rgb(59, 17, 17);
+    background-color: rgb(129, 45, 45);
     outline: none;
+}
+
+.button:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 0 rgb(59, 17, 17);
 }
 
 input:disabled,

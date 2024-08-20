@@ -1,3 +1,4 @@
+import 'package:super_ttt_server/packet/bidirectional/gg_packet.dart';
 import 'package:super_ttt_server/packet/bidirectional/reset_game_packet.dart';
 import 'package:super_ttt_server/packet/incoming/set_cell_packet.dart';
 import 'package:super_ttt_server/packet/outgoing/error_packet.dart';
@@ -35,6 +36,10 @@ class Player {
         return;
       }
       game.reset();
+    });
+
+    connection.on<GGPacket>((event) {
+      game.broadcast(GGPacket(player: cell));
     });
   }
 
